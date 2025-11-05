@@ -1,5 +1,3 @@
-
-
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -37,6 +35,8 @@ if __name__ == "__main__":
 
     n = 4  # number of nearest neighbors to retrieve
     threshold = 0.75  # similarity threshold
+
+    #TODO : load chunks and chunk_embeddings from the watson db
 
     similitudes = [
         {
