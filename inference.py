@@ -1,3 +1,5 @@
+from getpass import getpass
+from mistralai import Mistral
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
@@ -28,6 +30,8 @@ def rag_inference():
 
 
 if __name__ == "__main__":
+    api_key= getpass("Type your API Key")
+    client = Mistral(api_key=api_key)
     user_question = input("Pose ta question: ")
     question_embeddings = np.array([get_text_embedding(user_question)])
 
@@ -36,7 +40,12 @@ if __name__ == "__main__":
     n = 4  # number of nearest neighbors to retrieve
     threshold = 0.75  # similarity threshold
 
-    #TODO : load chunks and chunk_embeddings from the watson db
+    #TODO : load chunks and chunk_embeddings from the json
+    import json
+    with open("chunks_with_embeddings.json", "r", encoding="utf-8") as f:
+        data = json.load(f)
+    chunks = [item["text"] for item in data]
+    chunk_embeddings = np.array([item["embedding"] for item in data])
 
     similitudes = [
         {
@@ -78,7 +87,7 @@ if __name__ == "__main__":
     Given the context information and not prior knowledge, answer the query.
     Query: {question}
     Answer:
-    """.format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=question)
+    """.format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=user_question)
 
     print(prompt)
 
