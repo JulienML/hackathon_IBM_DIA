@@ -3,7 +3,19 @@ import numpy as np
 from getpass import getpass
 import json
 import time
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+CHUNKS_PATH = "chunks_with_embeddings.json"
+
+if MISTRAL_API_KEY is None:
+    raise RuntimeError("MISTRAL_API_KEY non défini.")
+
+
+client = Mistral(api_key=MISTRAL_API_KEY)
 
 def get_text_embedding(input):
     embeddings_batch_response = client.embeddings.create(
@@ -16,8 +28,6 @@ def get_text_embedding(input):
 
 
 if __name__ == "__main__":
-    api_key= getpass("Type your API Key")
-    client = Mistral(api_key=api_key)
     
     with open('data.txt', 'r', encoding='utf-8') as f:
         lines = f.readlines()

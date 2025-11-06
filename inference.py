@@ -2,63 +2,43 @@ from getpass import getpass
 from mistralai import Mistral
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
+import json
+from setup_RAG import get_text_embedding
+from dotenv import load_dotenv
+import os
 
-from hackathon_IBM_DIA.setup_RAG import get_text_embedding
+load_dotenv()
 
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+CHUNKS_PATH = "chunks_with_embeddings.json"
 
-def embed_query():
-    pass
-
-
-def retrieve_documents():
-    pass
-
-
-def build_prompt():
-    prompt = f""
+if MISTRAL_API_KEY is None:
+    raise RuntimeError("MISTRAL_API_KEY non défini.")
 
 
-def generate_answer():
-    pass
+client = Mistral(api_key=MISTRAL_API_KEY)
+
+with open("chunks_with_embeddings.json", "r", encoding="utf-8") as f:
+    data = json.load(f)
+
+chunks = [item["text"] for item in data]
+chunk_embeddings = np.array([item["embedding"] for item in data])
 
 
-def rag_inference():
-    pass
-
-
-
-
-
-if __name__ == "__main__":
-    api_key= getpass("Type your API Key")
-    client = Mistral(api_key=api_key)
-    user_question = input("Pose ta question: ")
-    question_embeddings = np.array([get_text_embedding(user_question)])
-
-    print(question_embeddings.shape)
-
-    n = 4  # number of nearest neighbors to retrieve
-    threshold = 0.75  # similarity threshold
-
-    #TODO : load chunks and chunk_embeddings from the json
-    import json
-    with open("chunks_with_embeddings.json", "r", encoding="utf-8") as f:
-        data = json.load(f)
-    chunks = [item["text"] for item in data]
-    chunk_embeddings = np.array([item["embedding"] for item in data])
-
+def _retrieve(question:str, top_k: int = 4, threshold: float = 0.75):
+    q_embeddings = np.array([get_text_embedding(question)])
     similitudes = [
         {
             "document": chunk,
             "similarity": cosine_similarity(
-                question_embeddings, emb.reshape(1, -1)
+                q_embeddings, emb.reshape(1, -1)
             )[0][0],
         }
         for chunk, emb in zip(chunks, chunk_embeddings)
     ]
 
     similitudes.sort(key=lambda x: x["similarity"], reverse=True)
-    retrieved_chunks = similitudes[:n]
+    retrieved_chunks = similitudes[:top_k]
 
     retrieved_chunks = [item["document"] for item in retrieved_chunks if item["similarity"] >= threshold]
 
@@ -76,9 +56,13 @@ if __name__ == "__main__":
 
     print("Retrieved chunks: ", retrieved_chunks)
     print("Number of retrieved chunks: ", len(retrieved_chunks))
-    print('similarity scores of retrieved chunks: ', [item["similarity"] for item in similitudes[:n]])
+    print('similarity scores of retrieved chunks: ', [item["similarity"] for item in similitudes[:top_k]])
     len(retrieved_chunks)
 
+    return retrieved_chunks
+
+
+def _build_prompt(question: str, retrieved_chunks: list):
     prompt = """
     Context information is below.
     ---------------------
@@ -87,23 +71,42 @@ if __name__ == "__main__":
     Given the context information and not prior knowledge, answer the query.
     Query: {question}
     Answer:
-    """.format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=user_question)
+    """.format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=question)
 
     print(prompt)
+    return prompt
 
-    def run_mistral(user_message, model="mistral-small-latest"):
-        messages = [
-            {
-                "role": "user", "content": user_message
-            }
-        ]
-        chat_response = client.chat.complete(
-            model=model,
-            messages=messages
-        )
-        return (chat_response.choices[0].message.content)
 
-    run_mistral(prompt)
+
+def _call_mistral(client, user_message, model="mistral-small-latest"):
+    messages = [
+        {
+            "role": "user", "content": user_message
+        }
+    ]
+    chat_response = client.chat.complete(
+        model=model,
+        messages=messages,
+        stream=True
+    )
+    return (chat_response.choices[0].message.content)
+
+
+def answer_question(question: str, top_k: int = 4, threshold: float = 0.75):
+    # Retrieving the relevant documents or the email addresses if no result
+    retrieved_docs = _retrieve(question, top_k=top_k, threshold=threshold)
+
+    # Building a prompt and calling the LLM model
+    prompt = _build_prompt(question, retrieved_docs)
+    try:
+        answer_text = _call_mistral(client, prompt)
+    except Exception as e:
+        return {
+            "answer": f"Désolé, une erreur est survenue lors de l'appel au modèle : {e}",
+            "docs": retrieved_docs,
+        }
+
+    return {"answer": answer_text, "docs": retrieved_docs}
 
 
 
