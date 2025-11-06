@@ -1,0 +1,8 @@
+chainlit==2.8.4
+dotenv==0.9.9
+ipykernel==6.30.1
+mariadb==1.1.14
+mistralai==1.9.11
+numpy==1.26.4
+pandas==2.2.3
+scikit-learn==1.7.2
