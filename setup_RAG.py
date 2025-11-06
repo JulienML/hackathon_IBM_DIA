@@ -22,8 +22,8 @@ def get_text_embedding(input):
         model="mistral-embed",
         inputs=input
     )
-    print(embeddings_batch_response)
-    time.sleep(0.2)  # to avoid rate limit
+    #print(embeddings_batch_response)
+    #time.sleep(0.2)  # to avoid rate limit
     return embeddings_batch_response.data[0].embedding
 
 

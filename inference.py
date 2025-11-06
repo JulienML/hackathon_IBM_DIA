@@ -54,10 +54,10 @@ def _retrieve(question:str, top_k: int = 4, threshold: float = 0.75):
                             - si aucun des sujets ne correspond à la requête : donne l'addresse de la scolarité de l'école concernée (si l'école n'est pas précisée, donne les 3)
                             """]
 
-    print("Retrieved chunks: ", retrieved_chunks)
-    print("Number of retrieved chunks: ", len(retrieved_chunks))
-    print('similarity scores of retrieved chunks: ', [item["similarity"] for item in similitudes[:top_k]])
-    len(retrieved_chunks)
+    #print("Retrieved chunks: ", retrieved_chunks)
+    #print("Number of retrieved chunks: ", len(retrieved_chunks))
+    #print('similarity scores of retrieved chunks: ', [item["similarity"] for item in similitudes[:top_k]])
+    #len(retrieved_chunks)
 
     return retrieved_chunks
 
@@ -73,7 +73,7 @@ def _build_prompt(question: str, retrieved_chunks: list):
     Answer:
     """.format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=question)
 
-    print(prompt)
+    #print(prompt)
     return prompt
 
 
@@ -86,8 +86,7 @@ def _call_mistral(client, user_message, model="mistral-small-latest"):
     ]
     chat_response = client.chat.complete(
         model=model,
-        messages=messages,
-        stream=True
+        messages=messages
     )
     return (chat_response.choices[0].message.content)
 

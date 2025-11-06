@@ -87,7 +87,7 @@ reaction_on_message_received = false
 [UI]
 # Name of the assistant.
 name = "Assistant PLV"
-login_page_image = "/public/favicon.png"
+login_page_image = "/public/background.png"
 
 # default_theme = "dark"
 
@@ -122,8 +122,8 @@ alert_style = "classic"
 # login_page_image = "/public/custom-background.jpg"
 
 # Custom login page image filter (Tailwind internal filters, no dark/light variants)
-# login_page_image_filter = "brightness-50 grayscale"
-# login_page_image_filter = "blur-sm"
+# login_page_image_filter = ""
+# login_page_image_filter = ""
 
 # Specify a custom meta URL (used for meta tags like og:url)
 # custom_meta_url = "https://github.com/Chainlit/chainlit"
