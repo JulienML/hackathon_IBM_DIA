@@ -5,6 +5,7 @@ import json
 import time
 from dotenv import load_dotenv
 import os
+import mariadb
 
 load_dotenv()
 
@@ -25,6 +26,26 @@ def get_text_embedding(input):
     print(embeddings_batch_response)
     time.sleep(0.2)  # to avoid rate limit
     return embeddings_batch_response.data[0].embedding
+
+
+def upload_embs_to_db(chunks, chunk_embeddings):
+    db = mariadb.connect(
+            user="root",
+            password="rootroot",
+            host="localhost",
+            port=3307, # Adjusted port for MariaDB
+            database="hackathon"
+        )
+    cursor = db.cursor()
+    for chunk, embedding in zip(chunks, chunk_embeddings):
+        vector_data = {str(i): float(embedding[i]) for i in range(len(embedding))}
+        cursor.execute(
+            "INSERT INTO qa_embs (chunk, vector_data) VALUES (?, ?)",
+            (chunk, json.dumps(vector_data))
+        )
+    db.commit()
+    cursor.close()
+    db.close()
 
 
 if __name__ == "__main__":
@@ -53,3 +74,7 @@ if __name__ == "__main__":
         json.dump(data, f, ensure_ascii=False, indent=2)
 
     print(f"Saved {len(data)} chunks with embeddings to chunks_with_embeddings.json")
+    
+    print("Uploading embeddings to database...")
+    upload_embs_to_db(chunks, chunk_embeddings)
+    print("Upload complete.")
