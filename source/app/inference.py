@@ -1,11 +1,39 @@
 from getpass import getpass
+import mariadb
 from mistralai import Mistral
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import json
+from API_db import QAEmbeddingDataset
 from setup_RAG import get_text_embedding
 from dotenv import load_dotenv
 import os
+
+
+def load_embs(method:str="json"):
+    if method == "json":
+        with open("chunks_with_embeddings.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        chunks = [item["text"] for item in data]
+        chunk_embeddings = np.array([item["embedding"] for item in data])
+    elif method == "db":
+        db = mariadb.connect(
+            user="root",
+            password="rootroot",
+            host="localhost",
+            port=3307, # Adjusted port for MariaDB
+            database="hackathon"
+        )
+        cursor = db.cursor()
+        dataset = QAEmbeddingDataset.load_from_db(cursor)
+        chunks = [entry.chunk for entry in dataset.qa_emb_list]
+        chunk_embeddings = np.array([list(entry.vector_data.values()) for entry in dataset.qa_emb_list])
+        cursor.close()
+        db.close()
+    else:
+        raise ValueError("Unknown method: {}. Only 'json' and 'db' methods are supported.".format(method))
+    return chunks, chunk_embeddings
+
 
 load_dotenv()
 
@@ -17,12 +45,7 @@ if MISTRAL_API_KEY is None:
 
 client = Mistral(api_key=MISTRAL_API_KEY)
 
-with open("data/chunks_with_embeddings.json", "r", encoding="utf-8") as f:
-    data = json.load(f)
-
-chunks = [item["text"] for item in data]
-chunk_embeddings = np.array([item["embedding"] for item in data])
-
+chunks, chunk_embeddings = load_embs(method="db")
 
 def _retrieve(question:str, top_k: int = 4, threshold: float = 0.75):
     q_embeddings = np.array([get_text_embedding(question)])
