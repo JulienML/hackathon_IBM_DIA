@@ -58,3 +58,19 @@ git push origin feature/my-awesome-feature
 
 Good luck during the IBM Hackathon — build, learn, and most importantly: **have fun!** 🚀
 
+---
+
+Create a `.env` file in the root of the project and add the following environment variables:
+
+```json
+MISTRAL_API_KEY="your_mistral_api_key"
+CHAINLIT_AUTH_SECRET="your_chainlit_auth_secret"
+```
+
+Get the CHAINLIT_AUTH_SECRET by executing `chainlit create-secret` in your terminal.
+
+Start app with:
+```bash
+cd source/app 
+chainlit run app.py
+```

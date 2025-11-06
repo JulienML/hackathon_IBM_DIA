@@ -4,7 +4,7 @@ from mistralai import Mistral
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 import json
-from hackathon_IBM_DIA.API_db import QAEmbeddingDataset
+from API_db import QAEmbeddingDataset
 from setup_RAG import get_text_embedding
 from dotenv import load_dotenv
 import os
@@ -38,7 +38,6 @@ def load_embs(method:str="json"):
 load_dotenv()
 
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-CHUNKS_PATH = "chunks_with_embeddings.json"
 
 if MISTRAL_API_KEY is None:
     raise RuntimeError("MISTRAL_API_KEY non défini.")
