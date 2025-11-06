@@ -10,7 +10,6 @@ import os
 load_dotenv()
 
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-CHUNKS_PATH = "chunks_with_embeddings.json"
 
 if MISTRAL_API_KEY is None:
     raise RuntimeError("MISTRAL_API_KEY non défini.")
@@ -18,7 +17,7 @@ if MISTRAL_API_KEY is None:
 
 client = Mistral(api_key=MISTRAL_API_KEY)
 
-with open("chunks_with_embeddings.json", "r", encoding="utf-8") as f:
+with open("data/chunks_with_embeddings.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 chunks = [item["text"] for item in data]

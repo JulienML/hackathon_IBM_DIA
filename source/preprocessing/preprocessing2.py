@@ -28,6 +28,6 @@ def traiter_fichier_excel(chemin_entree, chemin_sortie):
 
 # Exemple d'utilisation
 if __name__ == "__main__":
-    chemin_entree = 'donnees.xlsx'  # Remplace par le chemin de ton fichier Excel
-    chemin_sortie = 'donnees_clean.csv'    # Remplace par le chemin de sortie souhaité
+    chemin_entree = 'donnees.xlsx'
+    chemin_sortie = 'donnees_clean.csv'
     traiter_fichier_excel(chemin_entree, chemin_sortie)

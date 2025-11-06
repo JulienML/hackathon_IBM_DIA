@@ -28,8 +28,8 @@ def get_text_embedding(input):
 
 
 if __name__ == "__main__":
-    
-    with open('data.txt', 'r', encoding='utf-8') as f:
+
+    with open('./data/data.txt', 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
     # Remove empty lines and strip whitespace
