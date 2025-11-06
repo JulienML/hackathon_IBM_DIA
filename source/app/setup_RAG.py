@@ -1,6 +1,5 @@
 from mistralai import Mistral
 import numpy as np
-from getpass import getpass
 import json
 import time
 from dotenv import load_dotenv
@@ -10,7 +9,6 @@ import mariadb
 load_dotenv()
 
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
-CHUNKS_PATH = "chunks_with_embeddings.json"
 
 if MISTRAL_API_KEY is None:
     raise RuntimeError("MISTRAL_API_KEY non défini.")
@@ -64,16 +62,6 @@ if __name__ == "__main__":
     print(f"Calculating embeddings for {len(chunks)} chunks...")
     chunk_embeddings = np.array([get_text_embedding(chunk) for chunk in chunks])
     print(chunk_embeddings.shape)
-
-    data = [
-        {"text": chunk, "embedding": emb.tolist() if hasattr(emb, "tolist") else list(emb)}
-        for chunk, emb in zip(chunks, chunk_embeddings)
-    ]
-
-    with open("chunks_with_embeddings.json", "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-
-    print(f"Saved {len(data)} chunks with embeddings to chunks_with_embeddings.json")
     
     print("Uploading embeddings to database...")
     upload_embs_to_db(chunks, chunk_embeddings)
