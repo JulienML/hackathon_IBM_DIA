@@ -1,4 +1,4 @@
 .env
 __pycache__/
 *.pyc
-source/app/.chainlit/
+source/app/.chainlit/translations/
