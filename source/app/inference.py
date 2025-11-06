@@ -56,37 +56,38 @@ def _retrieve(question:str, top_k: int = 4, threshold: float = 0.75):
     retrieved_chunks = [item["document"] for item in retrieved_chunks if item["similarity"] >= threshold]
 
     if not retrieved_chunks:
-        retrieved_chunks = ["""Il n'y a pas d'informations pertinentes dans le contexte fourni. 
-                            Voici les adresses mails disponibles. Redirige l'utilisateur vers la bonne adresse mail en fonction de sa question.
-                            - service scolarité de l'ESILV : scolarite-esilv@devinci.fr
-                            - service scolarité de l'EMLV: scolarite-emlv@devinci.fr
-                            - service scolarité de l'IIM: scolarite-iim@devinci.fr
-                            - comptabilité étudiante (Bourse, CVEC, frais de scolarité, perte carte, remboursement, facture, réinscription): compta_etudiante@devinci.fr
-                            - alternance: alternance-esilv@devinci.fr
-                            - international: remy.sart@devinci.fr
-                            - si aucun des sujets ne correspond à la requête : donne l'addresse de la scolarité de l'école concernée (si l'école n'est pas précisée, donne les 3)
-                            """]
-
-    #print("Retrieved chunks: ", retrieved_chunks)
-    #print("Number of retrieved chunks: ", len(retrieved_chunks))
-    #print('similarity scores of retrieved chunks: ', [item["similarity"] for item in similitudes[:top_k]])
-    #len(retrieved_chunks)
+        retrieved_chunks = ["""There is no relevant information in the provided context.
+                    Here are the available email addresses. Redirect the user to the appropriate email based on their question:
+                    - **ESILV academic services**: scolarite-esilv@devinci.fr
+                    - **EMLV academic services**: scolarite-emlv@devinci.fr
+                    - **IIM academic services**: scolarite-iim@devinci.fr
+                    - **Student accounting (scholarships, CVEC, tuition fees, lost card, refunds, invoices, re-enrollment)**: compta_etudiante@devinci.fr
+                    - **Work-study programs (alternance)**: alternance-esilv@devinci.fr
+                    - **International matters**: remy.sart@devinci.fr
+                    - **If none of the topics match the request**: provide the academic services email for the relevant school (if the school is not specified, provide all three).
+                    """]
 
     return retrieved_chunks
 
 
 def _build_prompt(question: str, retrieved_chunks: list):
-    prompt = """
-    Context information is below.
-    ---------------------
-    {retrieved_chunks}
-    ---------------------
-    Given the context information and not prior knowledge, answer the query.
-    Query: {question}
-    Answer:
-    """.format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=question)
+    prompt = """You are an ai created by true GOAAATS (Lorrain, Julien...). You are created and owned by the school to help students to answer their questions on the School.
+There are 3 schools in the De Vinci Institute: ESILV (engineering school), EMLV (business school) and IIM (digital school).
+Alright, brainiac! 🎓 Let's tackle your question together.
+I've got some context to work with—check it out below!
+Answer only to school related questions.
+---------------------
+{retrieved_chunks}
+---------------------
+NEVER mention the above context as "the context" or "the document".
+Now, using *only* this info (no cheating with outside knowledge!), here's how I'd answer your question:
+**Query:** {question}
 
-    #print(prompt)
+**Answer:**
+[Insert your answer here—with a sprinkle of fun, a dash of humor, and a whole lot of clarity.]
+(And hey, if I don't know the answer, I'll admit it—no ego here, just vibes.)
+""".format(retrieved_chunks='\n\n'.join(retrieved_chunks), question=question)
+
     return prompt
 
 
