@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 # Charger le fichier XLSX
-file_path = 'Data.xlsx'
+file_path = 'source/app/data/Data.xlsx'
 df = pd.read_excel(file_path)
 
 # Afficher les premières lignes pour comprendre la structure
@@ -91,9 +91,26 @@ merged_df_cleaned['Content'] = merged_df_cleaned['Content'].apply(clean_html_and
 # Afficher un aperçu du résultat
 merged_df_cleaned.head()
 
+#conserve que les colonnes title, content et thématique
+merged_df_cleaned = merged_df_cleaned[['Title', 'Content', 'Thématiques']]
+
+# supprimes les lignes où content ou title ou thématique est vide
+merged_df_cleaned = merged_df_cleaned.dropna(subset=['Title', 'Content', 'Thématiques'])
+
+# supprime les guillemets dans les colonnes title, content et thématique
+merged_df_cleaned['Title'] = merged_df_cleaned['Title'].str.replace('"', '', regex=False)
+merged_df_cleaned['Content'] = merged_df_cleaned['Content'].str.replace('"', '', regex=False)
+merged_df_cleaned['Thématiques'] = merged_df_cleaned['Thématiques'].str.replace('"', '', regex=False)
+
+# ajoute "question : " avant chaque question, "réponse : " avant chaque réponse dans la colonne content et "thématique : " avant chaque thématique dans la colonne thématique
+merged_df_cleaned['Title'] = 'Question : ' + merged_df_cleaned['Title'] + ' '
+merged_df_cleaned['Content'] = ' Réponse : ' + merged_df_cleaned['Content'] + ' '
+merged_df_cleaned['Thématiques'] = ' Thématique : ' + merged_df_cleaned['Thématiques']
+
 
 # Enregistrer le fichier transformé et nettoyé
-cleaned_file_path = 'Cleaned_Transformed_Data.xlsx'
-merged_df_cleaned.to_excel(cleaned_file_path, index=False)
+cleaned_file_path = 'source/app/data/data.txt'
+#remove columns to have only the data , without header
+merged_df_cleaned.to_csv(cleaned_file_path, index=False, sep='|', header=False)
 
 cleaned_file_path
