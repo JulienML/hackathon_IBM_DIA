@@ -99,9 +99,9 @@ Then, open your browser and go to `http://localhost:8000`.
 ### Run the VueJS frontend (optional)
 #### Start the backend first
 1. Open a new terminal window.
-2. Navigate to the `source/app/backend` directory:
+2. Navigate to the `source/Vue/backend` directory:
     ```bash
-    cd source/app/backend
+    cd source/Vue/backend
     ```
 3. Install the dependencies:
     ```bash
@@ -114,9 +114,9 @@ Then, open your browser and go to `http://localhost:8000`.
 
 #### Start the frontend
 1. Open a new terminal window.
-2. Navigate to the `source/app/frontend` directory:
+2. Navigate to the `source/Vue/frontend` directory:
     ```bash
-    cd source/app/frontend
+    cd source/Vue/frontend
     ```
 3. Install the dependencies:
     ```bash
