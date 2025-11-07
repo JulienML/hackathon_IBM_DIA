@@ -14,13 +14,13 @@ Julien DE VOS - Lorrain MORLET - Noémie MAZEPA - Auriane MARCELINO - Lisa CHARU
 
 ---
 
-## 📱 Context
+## Context
 The actual Help center, relies on researches on a database with 400 cases.
 To improve the access to information for students, we developed an intelligent conversational agent who understand the request and give the correct answer, based on the questions of the database.
 
 ---
 
-## 🏗 Prerequisites
+## Prerequisites
 
 - Install the required packages:
 
@@ -46,7 +46,9 @@ To improve the access to information for students, we developed an intelligent c
 ---
 
 ## Start the project
+
 ### Data preprocessing
+
 #### watsonx
 1. Create an project on watsonx (ex: Hackathon_A5)
 2. Upload your dataset (csv) on watsonx
