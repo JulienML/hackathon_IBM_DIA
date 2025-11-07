@@ -5,15 +5,20 @@ Julien DE VOS - Lorrain MORLET - Noémie MAZEPA - Auriane MARCELINO - Lisa CHARU
 
 ## Table of Contents
 
-- [Context](#context)
-- [Prerequisites](#prerequisites)
-- [Start the project](#start-the-project)
-    - [Data pre-processing](#data-preprocessing)
-        - [Option 1: watsonx](#option-1-watsonx)
-        - [Option 2: Python](#option-2-python)
+- [Intelligent Help Center for PLV students (Group 3)](#intelligent-help-center-for-plv-students-group-3)
+  - [Table of Contents](#table-of-contents)
+  - [Context](#context)
+  - [Prerequisites](#prerequisites)
+  - [Start the project](#start-the-project)
+    - [Data preprocessing](#data-preprocessing)
+      - [Option 1: watsonx](#option-1-watsonx)
+      - [Option 2: Python](#option-2-python)
     - [Setup the MariaDB database](#setup-the-mariadb-database)
     - [Launch the Chainlit app](#launch-the-chainlit-app)
-- [Project architecture](#project-architecture)
+    - [Run the VueJS frontend (optional)](#run-the-vuejs-frontend-optional)
+      - [Start the backend first](#start-the-backend-first)
+      - [Start the frontend](#start-the-frontend)
+  - [Project architecture](#project-architecture)
 
 ---
 
@@ -89,6 +94,39 @@ chainlit run app.py
 ```
 
 Then, open your browser and go to `http://localhost:8000`.
+
+
+### Run the VueJS frontend (optional)
+#### Start the backend first
+1. Open a new terminal window.
+2. Navigate to the `source/app/backend` directory:
+    ```bash
+    cd source/app/backend
+    ```
+3. Install the dependencies:
+    ```bash
+    npm install
+    ```
+4. Start the ExpressJS server:
+    ```bash
+    node server.js
+    ```
+
+#### Start the frontend
+1. Open a new terminal window.
+2. Navigate to the `source/app/frontend` directory:
+    ```bash
+    cd source/app/frontend
+    ```
+3. Install the dependencies:
+    ```bash
+    npm install
+    ```
+4. Start the VueJS development server:
+    ```bash
+    npm run serve
+    ```
+5. Open your browser and go to `http://localhost:8080`.
 
 ## Project architecture
 
