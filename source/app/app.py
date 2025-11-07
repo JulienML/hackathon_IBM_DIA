@@ -1,12 +1,26 @@
 import chainlit as cl
-from inference import answer_question
-from typing import Optional
-import chainlit as cl
-import asyncio
 from dotenv import load_dotenv
+import os
+
+from utils.mistralWrapper import MistralWrapper
+from utils.mariaDBWrapper import MariaDBWrapper
 
 load_dotenv()
 
+MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
+
+if MISTRAL_API_KEY is None:
+    raise RuntimeError("MISTRAL_API_KEY non défini.")
+
+mistral_wrapper = MistralWrapper(api_key=MISTRAL_API_KEY)
+
+mariadb_wrapper = MariaDBWrapper(
+    host="localhost",
+    port=3307,  # Adjusted port for MariaDB
+    user="root",
+    password="rootroot",
+    database="hackathon"
+)
 
 @cl.password_auth_callback
 def auth_callback(username: str, password: str):
@@ -38,7 +52,6 @@ async def set_starters():
             message="Comment bénéficier d'une bourse ?"
         )
     ]
-
     
 @cl.on_message
 async def main(message: str):
@@ -46,9 +59,11 @@ async def main(message: str):
 
     loader = await cl.Message(content="⏳ Je réfléchis...").send()
 
-
     try:
-            resp = answer_question(user_text, top_k=4, threshold=0.75)
+        question_embedding = mistral_wrapper.embed_text(user_text)
+        retrieved_chunks = mariadb_wrapper.retrieve_chunks(question_embedding)
+
+        resp = mistral_wrapper.answer_question(question=user_text, retrieved_chunks=retrieved_chunks)
 
     except Exception as e:
         
