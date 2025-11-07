@@ -3,14 +3,14 @@ Julien DE VOS - Lorrain MORLET - Noémie MAZEPA - Auriane MARCELINO - Lisa CHARU
 
 **Table of Contents**
 
-- [Context](#-context)
-- [Prerequisites](#-prerequisites)
-- [Start the project](#-start-the-project)
-    - [Data pre-processing](#-data-pre-processing)
-        - [Option 1: watsonx](#️ⓜ️-watsonx)
-        - [Option 2: Python](#-python)
+- [Context](#context)
+- [Prerequisites](#prerequisites)
+- [Start the project](#start-the-project)
+    - [Data pre-processing](#data-preprocessing)
+        - [Option 1: watsonx](#option-1-watsonx)
+        - [Option 2: Python](#option-2-python)
     - [Setup the MariaDB database](#setup-the-mariadb-database)
-    - [Launch the Chainlit app](#-launch-the-chainlit-app)
+    - [Launch the Chainlit app](#launch-the-chainlit-app)
 
 ---
 
@@ -49,7 +49,7 @@ To improve the access to information for students, we developed an intelligent c
 
 ### Data preprocessing
 
-#### watsonx
+#### Option 1: watsonx
 1. Create an project on watsonx (ex: Hackathon_A5)
 2. Upload your dataset (csv) on watsonx
 3. Clic on your dataset then on "Prepare data"
@@ -57,7 +57,7 @@ To improve the access to information for students, we developed an intelligent c
 5. Create a concatenate columns grouping those three columns, with " | " as separator
 6. Save it and download it
 
-#### Python
+#### Option 2: Python
 1. Upload the `Data.xlsx` file containing your data in the `source/app/data` folder
 
 2. Execute the preprocessing.py file:
