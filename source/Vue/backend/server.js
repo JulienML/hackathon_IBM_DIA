@@ -4,21 +4,42 @@ import cors from "cors";
 import fs from "fs";
 import path from "path";
 import { Mistral } from "@mistralai/mistralai";
+import mariadb from "mariadb";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Autorise toutes les origines pour dev
 app.use(express.json());
 
-// --- Charger les chunks avec embeddings pré-calculés ---
-const __dirname = path.resolve();
-const chunksPath = path.join(__dirname, "chunks_with_embeddings.json");
+// --- MariaDB Pool Setup ---
+const pool = mariadb.createPool({
+  host: "localhost",
+  user: "root",
+  password: "rootroot",
+  port: 3307,
+  database: "hackathon",
+  connectionLimit: 5,
+});
+
 let chunks = [];
-try {
-  chunks = JSON.parse(fs.readFileSync(chunksPath, "utf-8"));
-  console.log("✅ Embeddings chargés :", chunks.length);
-} catch (err) {
-  console.error("❌ Impossible de charger les chunks :", err);
+async function loadEmbs() {
+  let conn;
+  try {
+    conn = await pool.getConnection();
+    const rows = await conn.query("SELECT chunk, vector_data FROM qa_embs");
+    chunks = rows.map((row) => ({
+      text: row.chunk,
+      embedding: Object.values(row.vector_data),
+    }));
+    console.log("✅ Embeddings chargés depuis MariaDB :", chunks.length);
+  } catch (err) {
+    console.error("❌ Impossible de charger les embeddings depuis MariaDB :", err);
+  } finally {
+    if (conn) conn.release();
+  }
 }
+
+// Load embeddings at startup
+await loadEmbs();
 
 // --- Initialiser Mistral ---
 if (!process.env.MISTRAL_API_KEY) {
