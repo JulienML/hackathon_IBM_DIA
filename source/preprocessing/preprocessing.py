@@ -2,7 +2,7 @@ import pandas as pd
 import re
 
 # Charger le fichier XLSX
-file_path = 'source/app/data/Data.xlsx'
+file_path = './data/Data.xlsx'
 df = pd.read_excel(file_path)
 
 # Afficher les premières lignes pour comprendre la structure
@@ -109,8 +109,6 @@ merged_df_cleaned['Thématiques'] = ' Thématique : ' + merged_df_cleaned['Thém
 
 
 # Enregistrer le fichier transformé et nettoyé
-cleaned_file_path = 'source/app/data/data.txt'
+cleaned_file_path = './data/data.txt'
 #remove columns to have only the data , without header
 merged_df_cleaned.to_csv(cleaned_file_path, index=False, sep='|', header=False)
-
-cleaned_file_path
