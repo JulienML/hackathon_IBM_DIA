@@ -97,12 +97,12 @@ The project is structured as follows:
 The python script that launches the Chainlit application is located in the `source/app/app.py` file.
 
 The utility wrappers are located in the `source/app/utils/` folder:
-    - `source/app/utils/mistralWrapper.py`: Wrapper for interacting with the Mistral API for text embedding and generation.
-    - `source/app/utils/mariaDBWrapper.py`: Wrapper for interacting with the MariaDB database to store and retrieve embeddings.
+- `source/app/utils/mistralWrapper.py`: Wrapper for interacting with the Mistral API for text embedding and generation.
+- `source/app/utils/mariaDBWrapper.py`: Wrapper for interacting with the MariaDB database to store and retrieve embeddings.
 
 The data preprocessing scripts are located in the `source/app/` folder:
-    - `source/app/preprocessing.py`: Script for preprocessing the data.
-    - `source/app/create_databases.sql`: SQL script to create the necessary database and tables in MariaDB.
+- `source/app/preprocessing.py`: Script for preprocessing the data.
+- `source/app/create_databases.sql`: SQL script to create the necessary database and tables in MariaDB.
 
 The `source/app/populate_mariadb.py` script is used to create the embeddings for the preprocessed data and populate the MariaDB database with these embeddings and their corresponding text chunks.
 
